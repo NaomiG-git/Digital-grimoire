@@ -1,0 +1,182 @@
+/* --- Basic Setup & Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap' );
+
+:root {
+    --bg-color: #1a1a2e;
+    --sidebar-bg: #16213e;
+    --widget-bg: #16213e;
+    --text-color: #e0e0e0;
+    --header-color: #ffffff;
+    --border-color: #0f3460;
+    --accent-color: #e94560;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+
+    --font-main: 'Lato', sans-serif;
+    --font-headings: 'Cinzel', serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+#app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- Sidebar Navigation --- */
+#sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    padding: 20px;
+    border-right: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar h2 {
+    font-family: var(--font-headings);
+    color: var(--header-color);
+    text-align: center;
+    margin-top: 0;
+    letter-spacing: 1px;
+}
+
+#sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+#sidebar nav li a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+#sidebar nav li a:hover {
+    background-color: var(--border-color);
+}
+
+/* --- Main Dashboard --- */
+#dashboard {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+#dashboard header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+#dashboard header h1 {
+    font-family: var(--font-headings);
+    font-size: 3em;
+    margin: 0;
+    color: var(--header-color);
+}
+
+#dashboard header p {
+    font-size: 1.2em;
+    margin-top: 5px;
+    color: var(--accent-color);
+}
+
+/* --- Widget Grid --- */
+.widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.widget {
+    background-color: var(--widget-bg);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+.widget h3 {
+    font-family: var(--font-headings);
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    color: var(--header-color);
+}
+
+/* --- Specific Widget Styles --- */
+
+/* Moon Phase Widget */
+#moon-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#moon-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    /* We will draw the moon phase here with JavaScript */
+}
+
+#moon-text p {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+#moon-zodiac {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Oracle & Scrying Widgets */
+#oracle-deck, #scrying-ball {
+    text-align: center;
+    cursor: pointer;
+}
+
+#card-placeholder {
+    width: 100px;
+    height: 150px;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    margin: 10px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#scrying-ball {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at 30% 30%, #555, #000);
+    border-radius: 50%;
+    margin: 10px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 3px solid #333;
+    box-shadow: inset 0 0 20px #000;
+}
+
+#scrying-ball p {
+    padding: 10px;
+}

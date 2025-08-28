@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Grimoire</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- Left Sidebar for Navigation -->
+        <aside id="sidebar">
+            <h2>The Grimoire</h2>
+            <nav>
+                <ul>
+                    <li><a href="#sabbats">The Sabbats</a></li>
+                    <li><a href="#herbs">Herbalism</a></li>
+                    <li><a href="#crystals">Crystals</a></li>
+                    <li><a href="#tools">Tools of the Craft</a></li>
+                </ul>
+            </nav>
+            <div id="wand-widget">
+                <p>Your Magical Wand</p>
+                <!-- The wand will be controlled by JavaScript -->
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <main id="dashboard">
+            <header>
+                <h1>The Digital Grimoire</h1>
+                <p>Your daily magical dashboard.</p>
+            </header>
+
+            <div class="widget-grid">
+                <!-- Moon Phase Widget -->
+                <div class="widget" id="moon-phase-widget">
+                    <h3>Current Moon Phase</h3>
+                    <div id="moon-display">
+                        <div id="moon-icon"></div>
+                        <div id="moon-text">
+                            <p id="moon-phase-name">Loading...</p>
+                            <p id="moon-zodiac">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spell of the Day Widget -->
+                <div class="widget" id="spell-of-the-day-widget">
+                    <h3>Spell of the Day</h3>
+                    <p id="spell-text">A charm for clarity is what you need today. Find a clear stone and hold it to the light.</p>
+                </div>
+
+                <!-- Oracle Card Widget -->
+                <div class="widget" id="oracle-card-widget">
+                    <h3>Daily Guidance</h3>
+                    <div id="oracle-deck">
+                        <p>Click the card to draw.</p>
+                        <div id="card-placeholder"></div>
+                    </div>
+                </div>
+
+                <!-- Scrying Ball Widget -->
+                <div class="widget" id="scrying-ball-widget">
+                    <h3>A Glimpse Beyond</h3>
+                    <div id="scrying-ball">
+                        <p id="prediction-text">Click the orb to see.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
