@@ -36,7 +36,7 @@
 @media print{
   body{background:#fff}.no-print,header,footer{display:none!important}main{max-width:none;padding:0}.view{display:none!important}#invoicePrint.view.active{display:block!important}.invoice-sheet{border:0;border-radius:0;box-shadow:none;page-break-after:always;padding:12mm;margin:0}.invoice-sheet:last-child{page-break-after:auto}
 }footer{position:fixed;bottom:0;left:0;right:0;background:#111827;color:#d1d5db;text-align:center;padding:6px;font-size:.72rem}</style></head><body>
-<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book</div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
+<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book <span style="opacity:.7">• v6</span></div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
 <main>
 <section id="today" class="view active"><h1>Daily Planner</h1>
 <div id="installBanner" class="install-banner" style="display:none"><b>Install Marc's app on this Android phone</b><div class="small">Install it so it opens from the home screen like a regular app.</div><button id="installBtn" class="btn primary" style="margin-top:8px">Install App</button></div>
@@ -147,5 +147,9 @@ let deferredInstallPrompt=null;
 window.addEventListener("beforeinstallprompt",ev=>{ev.preventDefault();deferredInstallPrompt=ev;installBanner.style.display="block"});
 if(typeof installBtn!=="undefined")installBtn.addEventListener("click",async()=>{if(deferredInstallPrompt){deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBanner.style.display="none"}else{alert("In Chrome, tap the three-dot menu and choose Install app or Add to Home screen.")}});
 window.addEventListener("appinstalled",()=>{installBanner.style.display="none"});
-if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
+if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
+      reg.update().catch(()=>{});
+    }).catch(()=>{});
+  }
 </script></body></html>
