@@ -1,0 +1,9 @@
+{
+  "name": "Marc's Renovations Planner",
+  "short_name": "Marc's Planner",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f3ee",
+  "theme_color": "#1f2937",
+  "description": "Daily planner and client job book for Marc's Renovations."
+}
