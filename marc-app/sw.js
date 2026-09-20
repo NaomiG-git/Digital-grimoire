@@ -1,4 +1,4 @@
-const CACHE="marcs-renovations-v6";
+const CACHE="marcs-renovations-v7";
 const SHELL=["./manifest.json","./icon.svg"];
 
 self.addEventListener("install",event=>{
