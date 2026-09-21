@@ -40,7 +40,7 @@
 @media print{
   body{background:#fff}.no-print,header,footer{display:none!important}main{max-width:none;padding:0}.view{display:none!important}#invoicePrint.view.active{display:block!important}.invoice-sheet{border:0;border-radius:0;box-shadow:none;page-break-after:always;padding:12mm;margin:0}.invoice-sheet:last-child{page-break-after:auto}
 }footer{position:fixed;bottom:0;left:0;right:0;background:#111827;color:#d1d5db;text-align:center;padding:6px;font-size:.72rem}</style></head><body>
-<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book <span style="opacity:.7">• v6</span></div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="costs">Costs</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
+<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book <span style="opacity:.7">• v8</span></div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="costs">Costs</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
 <main>
 <section id="today" class="view active"><h1>Daily Planner</h1>
 <div id="installBanner" class="install-banner" style="display:none"><b>Install Marc's app on this Android phone</b><div class="small">Install it so it opens from the home screen like a regular app.</div><button id="installBtn" class="btn primary" style="margin-top:8px">Install App</button></div>
@@ -101,9 +101,45 @@
 const K="marcsRenovations_v2";let db=JSON.parse(localStorage.getItem(K)||'{"clients":[],"hours":[],"days":{},"invoices":[],"nextInvoiceNumber":1001}');db.invoices=db.invoices||[];db.nextInvoiceNumber=db.nextInvoiceNumber||1001;db.labor=db.labor||[];db.estimates=db.estimates||[];db.contracts=db.contracts||[];db.costs=db.costs||[];db.nextEstimateNumber=db.nextEstimateNumber||1001;db.nextContractNumber=db.nextContractNumber||1001;const save=()=>{localStorage.setItem(K,JSON.stringify(db));refresh()};const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);const td=()=>{let d=new Date;d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};const e=s=>String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.v));function show(id){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.v===id));if(id==="clients")renderClients();if(id==="hours")renderHours();if(id==="labor")renderLabor();if(id==="costs")renderCosts();if(id==="estimates")renderEstimates();if(id==="contracts")renderContracts();if(id==="payments")renderPayments();if(id==="invoices")renderInvoices();if(id==="today")loadDay()}
 function opts(sel=""){return '<option value="">No client selected</option>'+db.clients.map(c=>'<option value="'+c.id+'" '+(c.id===sel?"selected":"")+'>'+e(c.name)+' — '+e(c.job||"Job")+'</option>').join("")}
-function newClient(){["cid","name","phone","email","address","job","start","desc","notes"].forEach(i=>document.getElementById(i).value="");status.value="Active";formTitle.textContent="New Client";show("edit")}
-function saveClient(){let id=cid.value||uid(),old=db.clients.find(c=>c.id===id)||{};let c={id,name:name.value.trim(),phone:phone.value,email:email.value,address:address.value,job:job.value,start:start.value,status:status.value,desc:desc.value,notes:notes.value,materials:old.materials||[]};if(!c.name)return alert("Enter the client name.");let i=db.clients.findIndex(x=>x.id===id);i>=0?db.clients[i]=c:db.clients.push(c);save();show("clients")}
-function editClient(id){let c=db.clients.find(x=>x.id===id);if(!c)return;cid.value=c.id;name.value=c.name;phone.value=c.phone||"";email.value=c.email||"";address.value=c.address||"";job.value=c.job||"";start.value=c.start||"";status.value=c.status||"Active";desc.value=c.desc||"";notes.value=c.notes||"";formTitle.textContent="Edit Client";show("edit")}
+function newClient(){["cid","name","phone","email","address","job","start","desc","notes"].forEach(i=>document.getElementById(i).value="");document.getElementById("status").value="Active";document.getElementById("formTitle").textContent="New Client";show("edit")}
+function saveClient(){
+  const g=id=>document.getElementById(id);
+  let id=g("cid").value||uid(),old=db.clients.find(c=>c.id===id)||{};
+  let c={
+    id,
+    name:g("name").value.trim(),
+    phone:g("phone").value.trim(),
+    email:g("email").value.trim(),
+    address:g("address").value.trim(),
+    job:g("job").value.trim(),
+    start:g("start").value,
+    status:g("status").value,
+    desc:g("desc").value.trim(),
+    notes:g("notes").value.trim(),
+    materials:old.materials||[]
+  };
+  if(!c.name){alert("Enter the client name.");g("name").focus();return;}
+  let i=db.clients.findIndex(x=>x.id===id);
+  if(i>=0)db.clients[i]=c;else db.clients.push(c);
+  save();
+  show("clients");
+}
+function editClient(id){
+  let c=db.clients.find(x=>x.id===id);if(!c)return;
+  const g=x=>document.getElementById(x);
+  g("cid").value=c.id;
+  g("name").value=c.name||"";
+  g("phone").value=c.phone||"";
+  g("email").value=c.email||"";
+  g("address").value=c.address||"";
+  g("job").value=c.job||"";
+  g("start").value=c.start||"";
+  g("status").value=c.status||"Active";
+  g("desc").value=c.desc||"";
+  g("notes").value=c.notes||"";
+  g("formTitle").textContent="Edit Client";
+  show("edit");
+}
 function renderClients(){let q=(search.value||"").toLowerCase(),a=db.clients.filter(c=>JSON.stringify(c).toLowerCase().includes(q));clientList.innerHTML=a.length?a.map(c=>'<div class="card client" onclick="openClient(\''+c.id+'\')"><div class="row"><h3>'+e(c.name)+'</h3><span class="pill">'+e(c.status)+'</span></div><div>'+e(c.job||"Renovation job")+'</div><div class="small">'+e(c.address||"No address")+'</div></div>').join(""):'<div class="card small">No clients yet.</div>'}
 function openClient(id){let c=db.clients.find(x=>x.id===id),hs=db.hours.filter(h=>h.clientId===id),total=hs.reduce((s,h)=>s+Number(h.hours),0);detailBody.innerHTML='<div class="card"><div class="row"><div><h1>'+e(c.name)+'</h1><h3>'+e(c.job)+'</h3></div><span class="pill">'+e(c.status)+'</span></div><p><b>Phone:</b> '+e(c.phone||"—")+'<br><b>Email:</b> '+e(c.email||"—")+'<br><b>Address:</b> '+e(c.address||"—")+'<br><b>Started:</b> '+e(c.start||"—")+'</p><h3>Job Description</h3><p>'+e(c.desc||"No description")+'</p><h3>Notes</h3><textarea id="detailNotes">'+e(c.notes||"")+'</textarea><div class="row"><button class="btn primary" onclick="saveNotes(\''+id+'\')">Save Notes</button><button class="btn secondary" onclick="editClient(\''+id+'\')">Edit</button></div></div><div class="card"><h2>Materials</h2><div id="mats">'+(c.materials||[]).map(m=>'<div class="row"><input value="'+e(m.item)+'" placeholder="Material" onchange="mat(\''+id+'\',\''+m.id+'\',this.value)"><input value="'+e(m.qty)+'" placeholder="Qty" onchange="qty(\''+id+'\',\''+m.id+'\',this.value)"></div>').join("")+'</div><button class="btn primary" onclick="addMat(\''+id+'\')">+ Add Material</button></div><div class="card"><h2>Hours: '+total.toFixed(2)+'</h2>'+hs.map(h=>'<div>'+e(h.date)+' — '+Number(h.hours).toFixed(2)+' hrs — '+e(h.work)+'</div>').join("")+'</div><div class="card"><h2>Job Costs</h2><div class="cost-total">'+money(db.costs.filter(r=>r.clientId===id).reduce((s,r)=>s+Number(r.amount||0),0))+'</div><div class="small">'+db.costs.filter(r=>r.clientId===id).length+' receipts/cost entries</div></div>';show("detail")}
 function saveNotes(id){db.clients.find(c=>c.id===id).notes=detailNotes.value;save();openClient(id)}function addMat(id){db.clients.find(c=>c.id===id).materials.push({id:uid(),item:"",qty:""});save();openClient(id)}function mat(cid,mid,v){db.clients.find(c=>c.id===cid).materials.find(m=>m.id===mid).item=v;save()}function qty(cid,mid,v){db.clients.find(c=>c.id===cid).materials.find(m=>m.id===mid).qty=v;save()}
