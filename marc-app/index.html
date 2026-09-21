@@ -40,7 +40,7 @@
 @media print{
   body{background:#fff}.no-print,header,footer{display:none!important}main{max-width:none;padding:0}.view{display:none!important}#invoicePrint.view.active{display:block!important}.invoice-sheet{border:0;border-radius:0;box-shadow:none;page-break-after:always;padding:12mm;margin:0}.invoice-sheet:last-child{page-break-after:auto}
 }footer{position:fixed;bottom:0;left:0;right:0;background:#111827;color:#d1d5db;text-align:center;padding:6px;font-size:.72rem}</style></head><body>
-<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book <span style="opacity:.7">• v8</span></div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="costs">Costs</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
+<header><div class="brand">Marc's Building & Renovation</div><div class="sub">Daily Planner & Client Job Book <span style="opacity:.7">• v9</span></div><nav><button data-v="today" class="active">Today</button><button data-v="clients">Clients</button><button data-v="hours">Hours</button><button data-v="labor">Labor</button><button data-v="costs">Costs</button><button data-v="estimates">Estimates</button><button data-v="contracts">Contracts</button><button data-v="payments">Payments</button><button data-v="invoices">Invoices</button><button data-v="backup">Backup</button></nav></header>
 <main>
 <section id="today" class="view active"><h1>Daily Planner</h1>
 <div id="installBanner" class="install-banner" style="display:none"><b>Install Marc's app on this Android phone</b><div class="small">Install it so it opens from the home screen like a regular app.</div><button id="installBtn" class="btn primary" style="margin-top:8px">Install App</button></div>
@@ -141,7 +141,35 @@ function editClient(id){
   show("edit");
 }
 function renderClients(){let q=(search.value||"").toLowerCase(),a=db.clients.filter(c=>JSON.stringify(c).toLowerCase().includes(q));clientList.innerHTML=a.length?a.map(c=>'<div class="card client" onclick="openClient(\''+c.id+'\')"><div class="row"><h3>'+e(c.name)+'</h3><span class="pill">'+e(c.status)+'</span></div><div>'+e(c.job||"Renovation job")+'</div><div class="small">'+e(c.address||"No address")+'</div></div>').join(""):'<div class="card small">No clients yet.</div>'}
-function openClient(id){let c=db.clients.find(x=>x.id===id),hs=db.hours.filter(h=>h.clientId===id),total=hs.reduce((s,h)=>s+Number(h.hours),0);detailBody.innerHTML='<div class="card"><div class="row"><div><h1>'+e(c.name)+'</h1><h3>'+e(c.job)+'</h3></div><span class="pill">'+e(c.status)+'</span></div><p><b>Phone:</b> '+e(c.phone||"—")+'<br><b>Email:</b> '+e(c.email||"—")+'<br><b>Address:</b> '+e(c.address||"—")+'<br><b>Started:</b> '+e(c.start||"—")+'</p><h3>Job Description</h3><p>'+e(c.desc||"No description")+'</p><h3>Notes</h3><textarea id="detailNotes">'+e(c.notes||"")+'</textarea><div class="row"><button class="btn primary" onclick="saveNotes(\''+id+'\')">Save Notes</button><button class="btn secondary" onclick="editClient(\''+id+'\')">Edit</button></div></div><div class="card"><h2>Materials</h2><div id="mats">'+(c.materials||[]).map(m=>'<div class="row"><input value="'+e(m.item)+'" placeholder="Material" onchange="mat(\''+id+'\',\''+m.id+'\',this.value)"><input value="'+e(m.qty)+'" placeholder="Qty" onchange="qty(\''+id+'\',\''+m.id+'\',this.value)"></div>').join("")+'</div><button class="btn primary" onclick="addMat(\''+id+'\')">+ Add Material</button></div><div class="card"><h2>Hours: '+total.toFixed(2)+'</h2>'+hs.map(h=>'<div>'+e(h.date)+' — '+Number(h.hours).toFixed(2)+' hrs — '+e(h.work)+'</div>').join("")+'</div><div class="card"><h2>Job Costs</h2><div class="cost-total">'+money(db.costs.filter(r=>r.clientId===id).reduce((s,r)=>s+Number(r.amount||0),0))+'</div><div class="small">'+db.costs.filter(r=>r.clientId===id).length+' receipts/cost entries</div></div>';show("detail")}
+function openClient(id){let c=db.clients.find(x=>x.id===id),hs=db.hours.filter(h=>h.clientId===id),total=hs.reduce((s,h)=>s+Number(h.hours),0);detailBody.innerHTML='<div class="card"><div class="row"><div><h1>'+e(c.name)+'</h1><h3>'+e(c.job)+'</h3></div><span class="pill">'+e(c.status)+'</span></div><p><b>Phone:</b> '+e(c.phone||"—")+'<br><b>Email:</b> '+e(c.email||"—")+'<br><b>Address:</b> '+e(c.address||"—")+'<br><b>Started:</b> '+e(c.start||"—")+'</p><h3>Job Description</h3><p>'+e(c.desc||"No description")+'</p><h3>Notes</h3><textarea id="detailNotes">'+e(c.notes||"")+'</textarea><div class="row"><button class="btn primary" onclick="saveNotes(\''+id+'\')">Save Notes</button><button class="btn secondary" onclick="editClient(\''+id+'\')">Edit</button><button class="btn danger" onclick="deleteClient(\''+id+'\')">Delete Client</button></div></div><div class="card"><h2>Materials</h2><div id="mats">'+(c.materials||[]).map(m=>'<div class="row"><input value="'+e(m.item)+'" placeholder="Material" onchange="mat(\''+id+'\',\''+m.id+'\',this.value)"><input value="'+e(m.qty)+'" placeholder="Qty" onchange="qty(\''+id+'\',\''+m.id+'\',this.value)"></div>').join("")+'</div><button class="btn primary" onclick="addMat(\''+id+'\')">+ Add Material</button></div><div class="card"><h2>Hours: '+total.toFixed(2)+'</h2>'+hs.map(h=>'<div>'+e(h.date)+' — '+Number(h.hours).toFixed(2)+' hrs — '+e(h.work)+'</div>').join("")+'</div><div class="card"><h2>Job Costs</h2><div class="cost-total">'+money(db.costs.filter(r=>r.clientId===id).reduce((s,r)=>s+Number(r.amount||0),0))+'</div><div class="small">'+db.costs.filter(r=>r.clientId===id).length+' receipts/cost entries</div></div>';show("detail")}
+function deleteClient(id){
+    const c=db.clients.find(x=>x.id===id);
+    if(!c)return;
+    const linkedHours=db.hours.filter(x=>x.clientId===id).length;
+    const linkedLabor=db.labor.filter(x=>x.clientId===id).length;
+    const linkedCosts=db.costs.filter(x=>x.clientId===id).length;
+    const linkedInvoices=db.invoices.filter(x=>x.clientId===id).length;
+    const linkedEstimates=db.estimates.filter(x=>x.clientId===id).length;
+    const linkedContracts=db.contracts.filter(x=>x.clientId===id).length;
+    const msg="Delete "+c.name+"?\n\nThis will also remove this client's linked records:\n"+
+      linkedHours+" hour entries\n"+
+      linkedLabor+" labor entries\n"+
+      linkedCosts+" costs/receipts\n"+
+      linkedInvoices+" invoices\n"+
+      linkedEstimates+" estimates\n"+
+      linkedContracts+" contracts\n\nThis cannot be undone.";
+    if(!confirm(msg))return;
+    db.clients=db.clients.filter(x=>x.id!==id);
+    db.hours=db.hours.filter(x=>x.clientId!==id);
+    db.labor=db.labor.filter(x=>x.clientId!==id);
+    db.costs=db.costs.filter(x=>x.clientId!==id);
+    db.invoices=db.invoices.filter(x=>x.clientId!==id);
+    db.estimates=db.estimates.filter(x=>x.clientId!==id);
+    db.contracts=db.contracts.filter(x=>x.clientId!==id);
+    Object.values(db.days||{}).forEach(d=>{if(d&&d.clientId===id)d.clientId=""});
+    save();
+    show("clients");
+  }
 function saveNotes(id){db.clients.find(c=>c.id===id).notes=detailNotes.value;save();openClient(id)}function addMat(id){db.clients.find(c=>c.id===id).materials.push({id:uid(),item:"",qty:""});save();openClient(id)}function mat(cid,mid,v){db.clients.find(c=>c.id===cid).materials.find(m=>m.id===mid).item=v;save()}function qty(cid,mid,v){db.clients.find(c=>c.id===cid).materials.find(m=>m.id===mid).qty=v;save()}
 function logHours(){if(!hDate.value||!hClient.value||!Number(hAmount.value))return alert("Choose date, client and hours.");db.hours.push({id:uid(),date:hDate.value,clientId:hClient.value,hours:Number(hAmount.value),work:hWork.value});hAmount.value="";hWork.value="";save();renderHours()}
 function renderHours(){let a=[...db.hours].sort((x,y)=>y.date.localeCompare(x.date));hoursList.innerHTML=a.length?'<table><tr><th>Date</th><th>Client</th><th>Hours</th><th>Work</th></tr>'+a.map(h=>'<tr><td>'+e(h.date)+'</td><td>'+e((db.clients.find(c=>c.id===h.clientId)||{}).name||"Deleted")+'</td><td>'+Number(h.hours).toFixed(2)+'</td><td>'+e(h.work)+'</td></tr>').join("")+'</table>':'<div class="small">No hours yet.</div>'}
